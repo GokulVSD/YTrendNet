@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import math
 import datetime as dt
+import handmade_ann
 
 
 def trainHandMadeANN(feature_set, labels):
@@ -35,10 +36,11 @@ count = 0
 total = len(raw_data.values)
 
 print(end="\n\n")
-print('-----------------------YTrendNet-----------------------')
-print('An Artificial Neural Network which finds how long a')
-print('YouTube Video will trend for given first day statistics')
-print('-------------------------------------------------------')
+print('------------------YTrendNet------------------')
+print('An Artificial Neural Network which finds how')
+print('long a YouTube Video will trend for given the')
+print('statistics of the video on the first day')
+print('---------------------------------------------')
 print(end="\n\n")
 
 channels = []
@@ -112,7 +114,7 @@ chan_enc = np.zeros((len(arr), len(channels)))
 labels_encoded = np.zeros((len(arr), max(labs) + 1))
 
 for i in range(len(arr)):
-    
+
     print("One-hot Encoding Data: ", int(((i+1)/len(arr))*100), "%", end='\r')
 
     cat_enc[i, arr[i][2]-1] = 1
@@ -130,25 +132,35 @@ data_enc = []
 
 for i in range(len(arr)):
 
-    print("Converting to Numpy array: ", int(((i+1)/len(arr))*100), "%", end='\r')
+    print("Converting to Numpy array: ", int(
+        ((i+1)/len(arr))*100), "%", end='\r')
 
-    data_enc.append([arr[i][:2] + arr[i][4:]+cat_enc[i].tolist()+chan_enc[i].tolist()])
+    data_enc.append(arr[i][:2] + arr[i][4:] +
+                    cat_enc[i].tolist()+chan_enc[i].tolist())
 
 data_encoded = np.array(data_enc)
 
 print("Converting to Numpy array: Completed!", end="\n\n")
 print('No. of video categories: ', len(categories))
+print('Highest Category ID: ', max(list(categories.keys())))
 print('Max no. of days a video was trending: ', max(labs))
-print("No. of YouTube channels: ", len(channels), end="\n\n")
+print('No. of instances:', data_encoded.shape[0])
+print("No. of nodes at the input layer: ", data_encoded.shape[1])
+print("No. of nodes at the output layer: ", max(labs) + 1)
+print('No. of YouTube channels: ', len(channels), end="\n\n")
 print("Options:")
 print("1. Test accuracy on Artificial Neural Network built by hand (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
-print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split")
+print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split", end="\n\n")
 print("Choose an option: ", end="")
 
-ch = input()
-if ch == 1:
-    testAccuracyHandMadeModel(0.8, data_encoded, labels_encoded)
-elif ch == 2:
-    testAccuracyKerasModel(0.8, data_encoded, labels_encoded)
-else:
-    print("Invalid Option")
+print()
+
+handmade_ann.train(data_encoded, labels_encoded, max(labs) + 1)
+
+# ch = input()
+# if ch == 1:
+#     testAccuracyHandMadeModel(0.8, data_encoded, labels_encoded)
+# elif ch == 2:
+#     testAccuracyKerasModel(0.8, data_encoded, labels_encoded)
+# else:
+#     print("Invalid Option")
