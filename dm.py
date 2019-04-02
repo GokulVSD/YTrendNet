@@ -5,6 +5,32 @@ import pandas as pd
 import math
 import datetime as dt
 
+
+def trainHandMadeANN(feature_set):
+    pass
+
+
+def trainKerasANN(feature_set):
+    pass
+
+
+def testAccuracyHandMadeModel(split_ratio, data):
+    pass
+
+
+def testAccuracyKerasModel(split_ratio, data):
+    pass
+
+
+def predictUsingHandMadeModel(feature_instance, data):
+    pass
+
+
+def predictUsingKerasModel(feature_instance, data):
+    pass
+
+
+# reading dataset
 raw_data = pd.read_csv('inputs/trending.csv')
 raw_categories = pd.read_json('inputs/categories.json')
 
@@ -81,8 +107,8 @@ print("Options:")
 print("1. Test accuracy on Artificial Neural Network built by hand (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
 print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split")
 print("3. Predict how long a video will trend for using Artificial Neural Network built by hand")
-print("4. Predict how long a video will trend for using Artificial Neural Network built using Keras and TensorFlow")
-print("Choose an option: ",end="")
+print("4. Predict how long a video will trend for using Artificial Neural Network built using Keras and TensorFlow", end="\n\n")
+print("Choose an option: ", end="")
 ch = input()
 print(ch)
 
