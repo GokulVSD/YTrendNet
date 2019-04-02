@@ -1,32 +1,23 @@
 # importing libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import math
 import datetime as dt
 
 
-def trainHandMadeANN(feature_set):
+def trainHandMadeANN(feature_set, labels):
     pass
 
 
-def trainKerasANN(feature_set):
+def trainKerasANN(feature_set, labels):
     pass
 
 
-def testAccuracyHandMadeModel(split_ratio, data):
+def testAccuracyHandMadeModel(split_ratio, data, labels):
     pass
 
 
-def testAccuracyKerasModel(split_ratio, data):
-    pass
-
-
-def predictUsingHandMadeModel(feature_instance, data):
-    pass
-
-
-def predictUsingKerasModel(feature_instance, data):
+def testAccuracyKerasModel(split_ratio, data, labels):
     pass
 
 
@@ -84,6 +75,7 @@ for i in raw_data.values:
             'title_caps_ratio': title_caps_ratio,
             'title_len': len(i[2]),
             'category': i[4],
+            'channel_title': i[3],
             'no_of_tags': no_of_tags,
             'delay_to_trend': delay_to_trend,
             'hour_of_day_published': pub_date.hour,
@@ -97,21 +89,66 @@ for i in raw_data.values:
 
         labels[i[0]] = {'days_trending': len(
             raw_data[raw_data.video_id == i[0]].values)}
-        if count == 200:
-            break  # remove later
+        # if count == 200:
+        #     break  # remove later
 
 print("Preprocessing Data: Completed!", end="\n\n")
+
+arr = []
+labs = []
+
+# converting data and labels into python lists
+for i, j in data.items():
+    arr.append(list(j.values()))
+    labs.append((labels[i])['days_trending'])
+
+
+# one-hot encoding categories and channel titles and converting to numpy arrays
+
+cat_enc = np.zeros((len(arr), max(list(categories.keys()))))
+
+chan_enc = np.zeros((len(arr), len(channels)))
+
+labels_encoded = np.zeros((len(arr), max(labs) + 1))
+
+for i in range(len(arr)):
+    
+    print("One-hot Encoding Data: ", int(((i+1)/len(arr))*100), "%", end='\r')
+
+    cat_enc[i, arr[i][2]-1] = 1
+
+    labels_encoded[i, labs[i]] = 1
+
+    try:
+        chan_enc[i, channels.index(arr[i][3])] = 1
+    except:
+        pass
+
+print("One-hot Encoding Data: Completed!", end="\n\n")
+
+data_enc = []
+
+for i in range(len(arr)):
+
+    print("Converting to Numpy array: ", int(((i+1)/len(arr))*100), "%", end='\r')
+
+    data_enc.append([arr[i][:2] + arr[i][4:]+cat_enc[i].tolist()+chan_enc[i].tolist()])
+
+data_encoded = np.array(data_enc)
+
+print("Converting to Numpy array: Completed!", end="\n\n")
 print('No. of video categories: ', len(categories))
+print('Max no. of days a video was trending: ', max(labs))
 print("No. of YouTube channels: ", len(channels), end="\n\n")
 print("Options:")
 print("1. Test accuracy on Artificial Neural Network built by hand (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
 print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split")
-print("3. Predict how long a video will trend for using Artificial Neural Network built by hand")
-print("4. Predict how long a video will trend for using Artificial Neural Network built using Keras and TensorFlow", end="\n\n")
 print("Choose an option: ", end="")
-ch = input()
-print(ch)
 
-# for i, j in data.items():
-#     print(j.keys())
-#     print(j.values(), labels[i].keys(), labels[i].values())
+ch = input()
+if ch == 1:
+    testAccuracyHandMadeModel(0.8, data_encoded, labels_encoded)
+elif ch == 2:
+    testAccuracyKerasModel(0.8, data_encoded, labels_encoded)
+else:
+    print("Invalid Option")
