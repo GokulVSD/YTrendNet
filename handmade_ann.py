@@ -20,7 +20,7 @@ def train(feature_set, one_hot_labels, output_labels):
 
     instances = feature_set.shape[0]
     attributes = feature_set.shape[1]
-    hidden_nodes = 300
+    hidden_nodes = 3500
 
     wh = np.random.rand(attributes, hidden_nodes)
     bh = np.random.randn(hidden_nodes)
@@ -41,7 +41,7 @@ def train(feature_set, one_hot_labels, output_labels):
             # Phase 2
             zo = np.dot(ah, wo) + bo
             ao = softmax(zo)
-            
+            print(ao) #something wrong with ao
         # Back Propagation
 
         # Phase 1
@@ -75,3 +75,6 @@ def train(feature_set, one_hot_labels, output_labels):
                 loss = np.sum(-one_hot_labels * np.log(ao))
                 print('Loss function value: ', loss,' Epoch: ',epoch,' of 50000')
                 error_cost.append(loss)
+
+            print('Loss function value: ', loss,' Epoch: ',epoch,' of 50000')
+            
