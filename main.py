@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 import math
 import datetime as dt
-import handmade_ann
+from sklearn.model_selection import train_test_split
+import numpy_ann
 
 
 def trainHandMadeANN(feature_set, labels):
@@ -185,13 +186,34 @@ print("No. of nodes at the input layer: ", data_encoded.shape[1])
 print("No. of nodes at the output layer: ", max(labs) + 1)
 print('No. of YouTube channels: ', len(channels), end="\n\n")
 print("Options:")
-print("1. Test accuracy on Artificial Neural Network built by hand (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
+print("1. Test accuracy on Artificial Neural Network built with pure Numpy (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
 print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split", end="\n\n")
 print("Choose an option: ", end="")
 
 print()
 
-handmade_ann.train(data_encoded, labels_encoded, max(labs) + 1)
+# random_state promises deterministic split
+train_data, test_data, train_labels, test_labels = train_test_split(data_encoded, labels_encoded, test_size=0.2, random_state=20)
+
+model = numpy_ann.ANN(train_data, train_labels)
+
+epochs = 20
+for i in range(epochs):
+    print("epoch: ", i, " of ", epochs, end="\t")
+    model.feedforward()
+    model.backpropogate()
+
+def get_acc(x, y):
+    acc = 0
+    for xx,yy in zip(x, y):
+        s = model.predict(xx)
+        #print(s," ",np.argmax(yy))
+        if s == np.argmax(yy):
+            acc +=1
+    return acc/len(x)*100
+	
+print("Training accuracy : ", get_acc(train_data, train_labels), " %")
+print("Test accuracy : ", get_acc(test_data, test_labels), " %")
 
 # ch = input()
 # if ch == 1:
