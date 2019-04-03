@@ -5,6 +5,7 @@ import math
 import datetime as dt
 from sklearn.model_selection import train_test_split
 import numpy_ann
+import keras_ann
 
 # reading dataset
 raw_data = pd.read_csv('inputs/trending.csv')
@@ -217,7 +218,7 @@ if int(ch) == 1 or int(ch) == 2:
         print("Test Average no. of days deviated: ", avg_dev, end="\n\n")
 
     else:
-        print("Not yet implemented")
+        keras_ann.test(train_data,train_labels,test_data,test_labels)
 
 else:
     print("Invalid choice")

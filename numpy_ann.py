@@ -40,7 +40,7 @@ class ANN:
         no_of_ip_nodes = data.shape[1]
         no_of_op_nodes = labels.shape[1]
 
-        np.random.seed(10)
+        # np.random.seed(10)
         #initialising weights and bias
         self.w1 = np.random.randn(no_of_ip_nodes, neurons)
         self.b1 = np.zeros((1, neurons))
