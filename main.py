@@ -218,7 +218,23 @@ if int(ch) == 1 or int(ch) == 2:
         print("Test Average no. of days deviated: ", avg_dev, end="\n\n")
 
     else:
-        keras_ann.test(train_data,train_labels,test_data,test_labels)
+        print("",end="\n\n")
+        print("Which activation function would you like to use for hidden layers?")
+        print("1. Sigmoid (Doesn't allow for overfitting)")
+        print("2. Relu (Linear Rectified, allows for overfitting)")
+        a = input()
+        if int(a) == 1:
+            act = "sigmoid"
+        else:
+            act = "relu"
+        
+        model = keras_ann.train(train_data,train_labels,test_data,test_labels,epochs,act)
+
+        scores = model.evaluate(train_data, train_labels)
+        print("Training accuracy: ", scores[1]*100)
+
+        scores = model.evaluate(test_data, test_labels)
+        print("Testing accuracy: ", scores[1]*100)
 
 else:
     print("Invalid choice")
