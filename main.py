@@ -6,23 +6,6 @@ import datetime as dt
 from sklearn.model_selection import train_test_split
 import numpy_ann
 
-
-def trainHandMadeANN(feature_set, labels):
-    pass
-
-
-def trainKerasANN(feature_set, labels):
-    pass
-
-
-def testAccuracyHandMadeModel(split_ratio, data, labels):
-    pass
-
-
-def testAccuracyKerasModel(split_ratio, data, labels):
-    pass
-
-
 # reading dataset
 raw_data = pd.read_csv('inputs/trending.csv')
 raw_categories = pd.read_json('inputs/categories.json')
@@ -186,39 +169,61 @@ print("No. of nodes at the input layer: ", data_encoded.shape[1])
 print("No. of nodes at the output layer: ", max(labs) + 1)
 print('No. of YouTube channels: ', len(channels), end="\n\n")
 print("Options:")
-print("1. Test accuracy on Artificial Neural Network built with pure Numpy (Cross-Entropy, Softmax, Sigmoid, Gradient Descent) with 80/20 split")
-print("2. Test accuracy on Artificial Neural Network built using Keras and TensorFlow with 80/20 split", end="\n\n")
+print("1. Train and Test accuracy on Artificial Neural Network built from scratch with Numpy (Cross-Entropy, Softmax, Sigmoid, Gradient Descent)")
+print("2. Train and Test accuracy on Artificial Neural Network built using Keras and TensorFlow (Cross-Entropy, Softmax, Sigmoid, Gradient Descent)")
+print("3. Restore model from persistent storage and test accuracy", end="\n\n")
 print("Choose an option: ", end="")
 
-print()
+ch = input()
 
-# random_state promises deterministic split
-train_data, test_data, train_labels, test_labels = train_test_split(data_encoded, labels_encoded, test_size=0.2, random_state=20)
+if int(ch) == 1 or int(ch) == 2:
 
-model = numpy_ann.ANN(train_data, train_labels)
+    print("Enter a split ratio: ", end="")
+    split = float(input())
 
-epochs = 20
-for i in range(epochs):
-    print("epoch: ", i, " of ", epochs, end="\t")
-    model.feedforward()
-    model.backpropogate()
+    print("Enter no. of epochs: ", end="")
+    epochs = int(input())
 
-def get_acc(x, y):
-    acc = 0
-    for xx,yy in zip(x, y):
-        s = model.predict(xx)
-        #print(s," ",np.argmax(yy))
-        if s == np.argmax(yy):
-            acc +=1
-    return acc/len(x)*100
-	
-print("Training accuracy : ", get_acc(train_data, train_labels), " %")
-print("Test accuracy : ", get_acc(test_data, test_labels), " %")
+    # random_state promises deterministic split
+    train_data, test_data, train_labels, test_labels = train_test_split(
+        data_encoded, labels_encoded, test_size=(1-split), random_state=20)
 
-# ch = input()
-# if ch == 1:
-#     testAccuracyHandMadeModel(0.8, data_encoded, labels_encoded)
-# elif ch == 2:
-#     testAccuracyKerasModel(0.8, data_encoded, labels_encoded)
-# else:
-#     print("Invalid Option")
+    if int(ch) == 1:
+        model = numpy_ann.ANN(train_data, train_labels)
+
+        print("Training model...")
+
+        for i in range(epochs):
+            print("epoch: ", i+1, " of ", epochs, end="\t")
+            model.feedforward()
+            model.backpropogate()
+
+        print("Done Training", end="\n\n")
+
+        def get_acc(x, y):
+            acc = 0
+            dev = 0
+            for xx, yy in zip(x, y):
+                s = model.predict(xx)
+                dev += abs(s - np.argmax(yy))
+                if s == np.argmax(yy):
+                    acc += 1
+            return acc/len(x)*100, dev/len(x)
+
+        acc, avg_dev = get_acc(train_data, train_labels)
+        print("Training accuracy: ", acc, " %")
+        print("Training Average no. of days deviated: ", avg_dev, end="\n\n")
+
+        acc, avg_dev = get_acc(test_data, test_labels)
+        print("Test accuracy: ", acc, " %")
+        print("Test Average no. of days deviated: ", avg_dev, end="\n\n")
+
+        print("Would you like to save this model to persistent storage?")
+
+    else:
+        print("Not yet implemented")
+
+elif int(ch)==3:
+    pass
+else:
+    print("Invalid choice")

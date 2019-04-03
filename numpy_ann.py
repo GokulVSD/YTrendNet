@@ -63,7 +63,7 @@ class ANN:
     def backpropogate(self):
 
         loss = cross_entropy(self.a3, self.labels)
-        print('Cost :', loss)
+        print('Cost:', loss)
 
         # calculation of cost and derivative of cost function
         a3_delta = delta_cross_entropy(self.a3, self.labels)
