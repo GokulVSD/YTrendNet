@@ -35,11 +35,12 @@ class ANN:
 
         self.data = data
         self.labels = labels
-        self.learning_rate = 0.2
-        neurons = 500       # no. of nodes in each hidden layer
+        self.learning_rate = 1
+        neurons = 3000       # no. of nodes in each hidden layer
         no_of_ip_nodes = data.shape[1]
         no_of_op_nodes = labels.shape[1]
 
+        np.random.seed(10)
         #initialising weights and bias
         self.w1 = np.random.randn(no_of_ip_nodes, neurons)
         self.b1 = np.zeros((1, neurons))

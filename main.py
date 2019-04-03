@@ -105,8 +105,6 @@ for i in raw_data.values:
 
         labels[i[0]] = {'days_trending': len(
             raw_data[raw_data.video_id == i[0]].values)}
-        # if count == 200:
-        #     break  # remove later
 
 print("Preprocessing Data: Completed!", end="\n\n")
 
@@ -170,8 +168,7 @@ print("No. of nodes at the output layer: ", max(labs) + 1)
 print('No. of YouTube channels: ', len(channels), end="\n\n")
 print("Options:")
 print("1. Train and Test accuracy on Artificial Neural Network built from scratch with Numpy (Cross-Entropy, Softmax, Sigmoid, Gradient Descent)")
-print("2. Train and Test accuracy on Artificial Neural Network built using Keras and TensorFlow (Cross-Entropy, Softmax, Sigmoid, Gradient Descent)")
-print("3. Restore model from persistent storage and test accuracy", end="\n\n")
+print("2. Train and Test accuracy on Artificial Neural Network built using Keras and TensorFlow (Cross-Entropy, Softmax, Sigmoid, Gradient Descent)", end="\n\n")
 print("Choose an option: ", end="")
 
 ch = input()
@@ -195,6 +192,7 @@ if int(ch) == 1 or int(ch) == 2:
 
         for i in range(epochs):
             print("epoch: ", i+1, " of ", epochs, end="\t")
+            model.learning_rate = (epochs-i)/epochs
             model.feedforward()
             model.backpropogate()
 
@@ -218,12 +216,8 @@ if int(ch) == 1 or int(ch) == 2:
         print("Test accuracy: ", acc, " %")
         print("Test Average no. of days deviated: ", avg_dev, end="\n\n")
 
-        print("Would you like to save this model to persistent storage?")
-
     else:
         print("Not yet implemented")
 
-elif int(ch)==3:
-    pass
 else:
     print("Invalid choice")
